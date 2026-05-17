@@ -20,7 +20,7 @@
  *   - Unique sites for dropdown: derived from the current result set
  */
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/cn";
@@ -38,8 +38,8 @@ import type { Asset, AssetState } from "@/lib/types";
 const PAGE_SIZE = 25;
 const PREFS_KEY = "manager-filter-prefs";
 
-const STATE_TABS: { value: AssetState | ""; label: string }[] = [
-  { value: "", label: "All" },
+const STATE_OPTIONS: { value: AssetState | ""; label: string }[] = [
+  { value: "", label: "All states" },
   { value: "received", label: "Received" },
   { value: "stored", label: "Stored" },
   { value: "in_service", label: "In service" },
@@ -87,6 +87,9 @@ export default function ManagerPage() {
   const [loadingList, setLoadingList] = useState(true);
   const [listError, setListError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  // Accumulate all seen sites across fetches so the site dropdown never
+  // shrinks when a filter is active — avoids the "select All then re-select" trap
+  const [knownSites, setKnownSites] = useState<string[]>([]);
 
   // ── Load saved preferences on mount ──────────────────────────────────────
   useEffect(() => {
@@ -110,6 +113,11 @@ export default function ManagerPage() {
       result.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
       setAssets(result);
       setPage(1);
+      // Grow the known-sites set — never shrink it so the dropdown stays complete
+      setKnownSites((prev) => {
+        const merged = new Set([...prev, ...result.map((a) => a.location.site).filter(Boolean)]);
+        return Array.from(merged).sort();
+      });
     } catch {
       setListError("Could not load assets. Check your connection and try again.");
     } finally {
@@ -128,11 +136,6 @@ export default function ManagerPage() {
     setFilters((prev) => ({ ...prev, ...patch }));
   }
 
-  // Derive unique sites from the current result set for the dropdown
-  const uniqueSites = useMemo(() => {
-    const sites = new Set(assets.map((a) => a.location.site).filter(Boolean));
-    return Array.from(sites).sort();
-  }, [assets]);
 
   // ── Save / reset preferences ──────────────────────────────────────────────
   const filtersMatchSaved =
@@ -197,39 +200,25 @@ export default function ManagerPage() {
           active={filters.state === "disposed"} />
       </div>
 
-      {/* State tabs */}
-      <div className="border-b border-gray-200">
-        <div
-          role="tablist"
-          aria-label="Filter by state"
-          className="-mb-px flex gap-0 overflow-x-auto"
-        >
-          {STATE_TABS.map((tab) => {
-            const active = filters.state === tab.value;
-            return (
-              <button
-                key={tab.value}
-                role="tab"
-                type="button"
-                aria-selected={active}
-                onClick={() => applyFilter({ state: tab.value as AssetState | "" })}
-                className={`whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 ${
-                  active
-                    ? "border-blue-600 text-blue-700"
-                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                }`}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Filter bar */}
       <div className="flex flex-wrap items-end gap-3">
+        {/* State */}
+        <div className="flex-1 min-w-[140px]">
+          <label htmlFor="filter-state" className={labelSm}>State</label>
+          <select
+            id="filter-state"
+            value={filters.state}
+            onChange={(e) => applyFilter({ state: e.target.value as AssetState | "" })}
+            className={selectCls}
+          >
+            {STATE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Site */}
-        <div className="flex-1 min-w-[160px]">
+        <div className="flex-1 min-w-[140px]">
           <label htmlFor="filter-site" className={labelSm}>Site</label>
           <select
             id="filter-site"
@@ -238,7 +227,7 @@ export default function ManagerPage() {
             className={selectCls}
           >
             <option value="">All sites</option>
-            {uniqueSites.map((s) => <option key={s} value={s}>{s}</option>)}
+            {knownSites.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
 
