@@ -24,7 +24,7 @@ import type { ReconcileBucket, ReconcileItem, ReconcileResult } from "@/app/api/
 type BucketMeta = {
   bucket: ReconcileBucket | "all";
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   color: string;
   cardBg: string;
   cardBorder: string;
@@ -34,8 +34,12 @@ type BucketMeta = {
 const BUCKET_META: BucketMeta[] = [
   {
     bucket: "ghost",
-    label: "Ghost records",
-    icon: "👻",
+    label: "Orphaned records",
+    icon: (
+      <svg className="h-3.5 w-3.5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+      </svg>
+    ),
     color: "text-gray-700",
     cardBg: "bg-gray-50",
     cardBorder: "border-gray-300",
@@ -44,7 +48,11 @@ const BUCKET_META: BucketMeta[] = [
   {
     bucket: "both_drift",
     label: "Both systems drifted",
-    icon: "⚠️",
+    icon: (
+      <svg className="h-3.5 w-3.5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      </svg>
+    ),
     color: "text-orange-700",
     cardBg: "bg-orange-50",
     cardBorder: "border-orange-300",
@@ -52,8 +60,13 @@ const BUCKET_META: BucketMeta[] = [
   },
   {
     bucket: "location_drift",
-    label: "Location drift",
-    icon: "📍",
+    label: "Location mismatch",
+    icon: (
+      <svg className="h-3.5 w-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+      </svg>
+    ),
     color: "text-amber-700",
     cardBg: "bg-amber-50",
     cardBorder: "border-amber-300",
@@ -61,8 +74,12 @@ const BUCKET_META: BucketMeta[] = [
   },
   {
     bucket: "finance_drift",
-    label: "Finance drift",
-    icon: "💰",
+    label: "Finance mismatch",
+    icon: (
+      <svg className="h-3.5 w-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33" />
+      </svg>
+    ),
     color: "text-blue-700",
     cardBg: "bg-blue-50",
     cardBorder: "border-blue-200",
@@ -70,8 +87,12 @@ const BUCKET_META: BucketMeta[] = [
   },
   {
     bucket: "synced",
-    label: "In sync",
-    icon: "✅",
+    label: "Reconciled",
+    icon: (
+      <svg className="h-3.5 w-3.5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
     color: "text-green-700",
     cardBg: "bg-green-50",
     cardBorder: "border-green-200",
@@ -101,17 +122,13 @@ function SummaryCard({
           : `bg-white border-gray-200 hover:${meta.cardBg} hover:${meta.cardBorder}`
       }`}
       aria-pressed={active}
+      title={meta.description}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-gray-500 flex items-center gap-1">
-            <span aria-hidden="true">{meta.icon}</span>
-            {meta.label}
-          </p>
-          <p className={`text-2xl font-bold mt-0.5 ${meta.color}`}>{count}</p>
-          <p className="text-xs text-gray-400 mt-0.5 leading-tight">{meta.description}</p>
-        </div>
-      </div>
+      <p className="text-xs font-medium text-gray-500 flex items-center gap-1.5">
+        <span aria-hidden="true" className="flex-shrink-0">{meta.icon}</span>
+        {meta.label}
+      </p>
+      <p className={`text-2xl font-bold mt-1 ${meta.color}`}>{count}</p>
     </button>
   );
 }
@@ -141,9 +158,9 @@ function BucketPill({ bucket }: { bucket: ReconcileBucket }) {
   };
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colorMap[bucket] ?? "bg-gray-100 text-gray-600"}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${colorMap[bucket] ?? "bg-gray-100 text-gray-600"}`}
     >
-      <span aria-hidden="true">{meta.icon}</span>
+      <span aria-hidden="true" className="flex-shrink-0">{meta.icon}</span>
       {meta.label}
     </span>
   );

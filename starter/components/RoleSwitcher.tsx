@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { getRole, setRole, type Role } from "@/lib/auth";
 
 export function RoleSwitcher() {
+  const pathname = usePathname();
   const [role, setRoleState] = useState<Role>("tech");
 
   useEffect(() => {
@@ -28,6 +30,9 @@ export function RoleSwitcher() {
     // while now acting as a tech).
     window.location.href = next === "tech" ? "/tech" : "/manager";
   }
+
+  // Landing page has its own role entry points — switcher is redundant there
+  if (pathname === "/") return null;
 
   const label =
     role === "tech" ? "Switch to manager view" : "Switch to tech view";

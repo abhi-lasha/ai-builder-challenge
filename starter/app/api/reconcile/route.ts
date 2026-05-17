@@ -178,7 +178,7 @@ export async function GET(): Promise<NextResponse> {
       items.push({
         asset_tag: fac.tagged_id,
         bucket: "ghost",
-        issues: [`Ghost: found in Facilities (tagged_id=${fac.tagged_id}) but not in Operations`],
+        issues: [`Orphaned: found in Facilities (tagged_id=${fac.tagged_id}) but not in Operations`],
         asset: null,
         facilities: fac,
         finance: financeByTag.get(fac.tagged_id) ?? null,
@@ -192,7 +192,7 @@ export async function GET(): Promise<NextResponse> {
       items.push({
         asset_tag: fin.tag,
         bucket: "ghost",
-        issues: [`Ghost: found in Finance (tag=${fin.tag}) but not in Operations`],
+        issues: [`Orphaned: found in Finance (tag=${fin.tag}) but not in Operations`],
         asset: null,
         facilities: facilitiesByTag.get(fin.tag) ?? null,
         finance: fin,

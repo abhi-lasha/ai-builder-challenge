@@ -7,9 +7,8 @@ export default function HomePage() {
       <section className="pt-4">
         <h1 className="text-3xl font-semibold text-gray-900">Lab Asset Tracking</h1>
         <p className="text-gray-500 mt-2 max-w-xl text-sm leading-relaxed">
-          Track equipment across all sites — from receiving dock to rack to retirement.
-          Three systems, one view. Use the role switcher in the header to act as a
-          technician or asset manager.
+          Track lab equipment from the receiving dock through deployment and disposal.
+          Switch between the technician and manager views using the role selector in the top right.
         </p>
       </section>
 
