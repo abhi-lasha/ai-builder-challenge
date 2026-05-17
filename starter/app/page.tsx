@@ -62,7 +62,7 @@ export default function HomePage() {
               <h2 className="text-lg font-semibold text-gray-900">Asset Manager</h2>
             </div>
             <p className="text-sm text-gray-500">
-              Desktop dashboard for browsing assets, reviewing event history, and running three-way reconciliation across operations, facilities, and finance.
+              Desktop dashboard for browsing assets, reviewing event history, and spotting discrepancies across systems.
             </p>
           </div>
 
