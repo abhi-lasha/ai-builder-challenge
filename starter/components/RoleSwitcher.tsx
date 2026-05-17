@@ -1,41 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getRole, setRole, type Role } from "@/lib/auth";
+import { setRole, type Role } from "@/lib/auth";
 
 export function RoleSwitcher() {
   const pathname = usePathname();
-  const [role, setRoleState] = useState<Role>("tech");
-
-  useEffect(() => {
-    // Derive the current role from the URL — the pathname is the ground truth.
-    // A stored preference that contradicts where the user actually is would
-    // show the wrong label (e.g. "Switch to manager view" while on /manager).
-    const fromPath = window.location.pathname.startsWith("/manager")
-      ? "manager"
-      : window.location.pathname.startsWith("/tech")
-        ? "tech"
-        : getRole(); // "/" or unknown — fall back to stored preference
-    setRoleState(fromPath);
-    setRole(fromPath); // keep storage in sync
-  }, []);
-
-  function handleClick(): void {
-    const next: Role = role === "tech" ? "manager" : "tech";
-    setRole(next);
-    setRoleState(next);
-    // Navigate to the new role's home — reloading in place would keep the
-    // user on a page that belongs to the old role (e.g. /manager/reconcile
-    // while now acting as a tech).
-    window.location.href = next === "tech" ? "/tech" : "/manager";
-  }
 
   // Landing page has its own role entry points — switcher is redundant there
   if (pathname === "/") return null;
 
-  const label =
-    role === "tech" ? "Switch to manager view" : "Switch to tech view";
+  // Derive role directly from the URL — no state, no flash, always correct.
+  // The layout keeps this component mounted across navigations so useState
+  // would go stale; pathname from usePathname() updates reactively.
+  const role: Role = pathname.startsWith("/manager") ? "manager" : "tech";
+  const next: Role = role === "manager" ? "tech" : "manager";
+  const label = role === "manager" ? "Switch to tech view" : "Switch to manager view";
+
+  function handleClick(): void {
+    setRole(next);
+    window.location.href = next === "tech" ? "/tech" : "/manager";
+  }
 
   return (
     <button
@@ -44,8 +28,7 @@ export function RoleSwitcher() {
       className="text-sm px-3 py-1.5 rounded-md border border-gray-300 hover:bg-gray-50 min-h-[44px]"
       aria-label={label}
     >
-      <span className="text-gray-500 mr-2">role: {role}</span>
-      <span className="font-medium">{label}</span>
+      {label}
     </button>
   );
 }
