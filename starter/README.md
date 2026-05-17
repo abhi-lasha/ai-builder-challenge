@@ -2,6 +2,10 @@
 
 The Next.js frontend for the asset tracking challenge. See the [root README](../README.md) for the full submission writeup.
 
+**Live app:** https://ai-builder-challenge-starter-4u67jc84f-abhi-lashas-projects.vercel.app
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/abhi-lasha/ai-builder-challenge/tree/main/starter&env=API_BASE_URL,API_TOKEN)
+
 ## Quick start
 
 ```bash

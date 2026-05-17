@@ -2,6 +2,8 @@
 
 Built by Abhilasha Senapati for the Cerebras AI Engineering Intern take-home challenge.
 
+**Live app:** https://ai-builder-challenge-starter-4u67jc84f-abhi-lashas-projects.vercel.app
+
 ---
 
 ## Running locally
