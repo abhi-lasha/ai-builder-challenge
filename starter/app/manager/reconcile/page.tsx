@@ -360,7 +360,7 @@ export default function ReconcilePage() {
                           <td className="px-4 py-3">
                             {item.asset ? (
                               <Link
-                                href={`/manager/assets/${item.asset_tag}`}
+                                href={`/manager/assets/${item.asset_tag}?from=reconcile`}
                                 className="font-mono text-blue-600 hover:underline focus:outline-none focus:ring-1 focus:ring-blue-500 rounded"
                               >
                                 {item.asset_tag}
@@ -421,7 +421,7 @@ export default function ReconcilePage() {
                         <div>
                           {item.asset ? (
                             <Link
-                              href={`/manager/assets/${item.asset_tag}`}
+                              href={`/manager/assets/${item.asset_tag}?from=reconcile`}
                               className="font-mono text-sm text-blue-600 hover:underline"
                             >
                               {item.asset_tag}

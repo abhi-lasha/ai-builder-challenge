@@ -12,6 +12,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { BackLink } from "@/components/BackLink";
 import { api, ApiError } from "@/lib/api-client";
 import { formatRelativeTime, formatAbsoluteDate } from "@/lib/format";
 import { formatLocation } from "@/lib/scan-utils";
@@ -391,25 +392,3 @@ export default async function ManagerAssetDetailPage({
   );
 }
 
-// ── BackLink ──────────────────────────────────────────────────────────────────
-
-function BackLink() {
-  return (
-    <Link
-      href="/manager"
-      className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors"
-    >
-      <svg
-        className="h-4 w-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={2}
-        aria-hidden="true"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-      </svg>
-      Back to asset list
-    </Link>
-  );
-}
