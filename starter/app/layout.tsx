@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { RoleSwitcher } from "@/components/RoleSwitcher";
+import { BarcodeDrawer } from "@/components/BarcodeDrawer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
           </div>
         </header>
         <main id="main-content" className="max-w-5xl mx-auto px-4 py-6">{children}</main>
+        <BarcodeDrawer />
       </body>
     </html>
   );

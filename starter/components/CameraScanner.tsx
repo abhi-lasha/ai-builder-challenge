@@ -239,7 +239,7 @@ export function CameraScanner({
                 className="pointer-events-none absolute inset-0 flex items-center justify-center"
                 aria-hidden="true"
               >
-                <div className="h-36 w-64 rounded-lg border-2 border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.35)]" />
+                <div className="h-52 w-52 rounded-lg border-2 border-white/70 shadow-[0_0_0_9999px_rgba(0,0,0,0.35)]" />
               </div>
 
               {/* Starting overlay */}

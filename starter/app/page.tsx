@@ -91,22 +91,6 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* Test barcodes hint */}
-      <section className="rounded-lg border border-gray-100 bg-gray-50 px-5 py-4 flex items-center justify-between gap-4">
-        <div>
-          <p className="text-sm font-medium text-gray-700">Need barcodes to scan?</p>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Printable QR codes for all test assets, locations, and badge IDs.
-          </p>
-        </div>
-        <Link
-          href="/dev/barcodes"
-          className="flex-shrink-0 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-        >
-          View barcodes →
-        </Link>
-      </section>
     </div>
   );
 }
