@@ -91,6 +91,18 @@ The manager list has saved filter preferences in localStorage. Server components
 
 ---
 
+## Deliberate edge case decisions
+
+**De-rack warning on store.** When a tech stores an asset that's currently `in_service`, the app warns before committing. I could have silently allowed it — the API accepts it. I didn't, because moving a live server out of a rack without a heads-up is how incidents start. The warning is one extra tap; the alternative is an unexplained outage.
+
+**Same-custodian guard on transfer.** If a tech scans their own badge as the transfer recipient, the app blocks it client-side before hitting the API. The API would reject it anyway, but showing the error before the network round-trip means the tech gets immediate feedback rather than a confusing API error message.
+
+**Serial conflict shows both serials side-by-side.** A 409 on receive means the tag exists with a different serial — someone either mis-scanned or the asset was relabelled. I show both the existing serial and the one just entered in a side-by-side comparison. A generic "conflict" error would send the tech to a manager with no information. The comparison gives them what they need to resolve it on the spot.
+
+**Write-back failures don't block the tech.** If the Facilities or Finance write-back fails after a deploy scan, the scan itself is still committed. The tech gets a success. The discrepancy surfaces in the next reconciliation run. Blocking a deployment because an internal system is slow or down would be the wrong tradeoff — the asset is physically in the rack regardless of what Facilities thinks.
+
+---
+
 ## What I chose not to build
 
 **Counts on the summary cards.** My first pass showed "42 in service / 17 stored / …" on the dashboard cards. Getting those numbers required 6 parallel API calls on every page load — one per state, because the API has no aggregation endpoint. I removed the counts and made the cards pure filter shortcuts. The total count is derived from the single list request already in flight. Removing those 6 calls was the single biggest performance improvement I made.
